@@ -11,5 +11,8 @@
     "Ledger"
   ],
   "author": "Szymon Hyziak",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "xrpl": "^2.7.0"
+  }
 }
