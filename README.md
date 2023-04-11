@@ -24,10 +24,14 @@
 
 - <https://xrpl.org/xrp-ledger-businesses.html>
 
-## Issue a fungible token
-
-- <https://xrpl.org/issue-a-fungible-token.html>
-
 ## Set up secure signing
 
 - <https://xrpl.org/set-up-secure-signing.html>
+
+## Tokens
+
+- <https://xrpl.org/tokens.html>
+
+## TOML file
+
+- <https://xrpl.org/xrp-ledger-toml.html>
