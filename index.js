@@ -1,7 +1,9 @@
 const xrpl = require("xrpl");
 
+const server = "wss://s.altnet.rippletest.net:51233";
+
 async function main() {
-  const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
+  const client = new xrpl.Client(server);
   console.log("Connecting to testnet...");
   await client.connect();
 
@@ -13,7 +15,7 @@ async function main() {
   console.log(`Balance: ${balance} XRP`);
   console.log("Public Key: ", publicKey);
   console.log("Private Key: ", privateKey);
-  console.log("Classic Adress: ", classicAddress);
+  console.log("Address: ", classicAddress);
   console.log("Seed: ", seed);
 
   console.log("Requesting account information...");
@@ -44,3 +46,5 @@ async function main() {
 }
 
 main();
+
+// Explore different client request options 

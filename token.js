@@ -1,18 +1,9 @@
 const xrpl = require("xrpl");
 
-const credentials = {
-  hotWallet: {
-    address: "rGf1V8SK2PcVcDpCzvhbWRMebzJfCJdYxG",
-    secret: "snidrSmXUgC4vQ2PmPPdW37U7V3nW",
-  },
-  coldWallet: {
-    address: "r9GERJj9xucoqEs69X6spWDdNsPwpfqvua",
-    secret: "shZWMLkQbkswWKGeVzCj39uZ7tRAa",
-  },
-};
+const server = "wss://s.altnet.rippletest.net:51233";
 
 async function main() {
-  const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
+  const client = new xrpl.Client(server);
   console.log("Connecting to testnet...");
   await client.connect();
 
@@ -152,3 +143,5 @@ async function main() {
 }
 
 main();
+
+// Research flags 
