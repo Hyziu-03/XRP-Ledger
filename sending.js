@@ -1,28 +1,28 @@
 const xrpl = require("xrpl");
+require("dotenv").config();
 
-const seed = "shRvy2jLMHYNNwLjBHF85RnMAGSuB";
-const destinationAddress = "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59";
+const server = "wss://s.altnet.rippletest.net:51233";
 
 async function main() {
-  const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
+  const client = new xrpl.Client(server);
   console.log("Connecting to testnet...");
   await client.connect();
 
   console.log("Setting up wallet from seed...")
-  const wallet = xrpl.Wallet.fromSeed(seed);
+  const wallet = xrpl.Wallet.fromSeed(process.env.SEED);
   const { publicKey, privateKey, address } = wallet;
 
   console.log("Public Key: ", publicKey);
   console.log("Private Key: ", privateKey);
-  console.log("Classic Address: ", address);
+  console.log("Address: ", address);
 
   const xrp = xrpl.xrpToDrops("10");
-  console.log("Prepating transaction details...");
+  console.log("Preparing transaction details...");
   const details = await client.autofill({
     TransactionType: "Payment",
     Account: address,
     Amount: xrp,
-    Destination: destinationAddress,
+    Destination: process.env.DESTINATION_ADDRESS,
   });
 
   const { Account, Amount, Destination, TransactionType } = details;

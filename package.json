@@ -13,6 +13,7 @@
   "author": "Szymon Hyziak",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "xrpl": "^2.7.0"
   }
 }
