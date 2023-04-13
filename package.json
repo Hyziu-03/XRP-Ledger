@@ -13,6 +13,7 @@
   "author": "Szymon Hyziak",
   "license": "ISC",
   "dependencies": {
+    "big.js": "^6.2.1",
     "dotenv": "^16.0.3",
     "xrpl": "^2.7.0"
   }
