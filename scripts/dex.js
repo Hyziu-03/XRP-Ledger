@@ -1,7 +1,7 @@
 const xrpl = require("xrpl");
-const server = require("./server.js");
+const server = require("../tools/server.js");
 const Big = require("big.js");
-const { lookUpOffers } = require("./dex.js");
+const { lookUpOffers } = require("../tools/steps.js");
 require("dotenv").config();
 
 async function main() {

@@ -1,5 +1,5 @@
 const xrpl = require("xrpl");
-const server = require("./server.js");
+const server = require("../tools/server.js");
 require("dotenv").config();
 
 async function main() {
