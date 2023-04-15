@@ -41,7 +41,7 @@ async function main() {
 		console.log(`Hash: ${hash}`);
 	} else {
 		console.log(`Result: ${result}`);
-		throw new Error("Cold wallet transaction failed ❌");
+		console.error("Cold wallet transaction failed ❌");
 	}
 
 	const hotWalletSettings = {
@@ -73,7 +73,7 @@ async function main() {
 		console.log(`Hash: ${hash2}`);
 	} else {
 		console.log(`Result: ${result2}`);
-		throw new Error("Hot wallet transaction failed ❌");
+		console.error("Hot wallet transaction failed ❌");
 	}
 
 	const currencyCode = "FOO";
@@ -106,7 +106,7 @@ async function main() {
 		console.log(`Hash: ${hash3}`);
 	} else {
 		console.log(`Result: ${result3}`);
-		throw new Error("Transaction failed ❌");
+		console.error("Transaction failed ❌");
 	}
 
 	const quantity = "3840";
@@ -141,7 +141,7 @@ async function main() {
 		console.log(`Hash: ${hash4}`);
 	} else {
 		console.log(`Result: ${result4}`);
-		throw new Error("Transaction failed ❌");
+		console.error("Transaction failed ❌");
 	}
 
 	console.log("Getting hot wallet information...");
