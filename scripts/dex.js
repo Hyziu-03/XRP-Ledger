@@ -2,6 +2,7 @@ const xrpl = require("xrpl");
 const server = require("../tools/server.js");
 const Big = require("big.js");
 const { lookUpOffers } = require("../tools/steps.js");
+const { setupWallet } = require("../tools/helpers.js");
 require("dotenv").config();
 
 async function main() {
@@ -9,8 +10,8 @@ async function main() {
 	console.log("Connecting to testnet...");
 	await client.connect();
 
-	const wallet = (await client.fundWallet()).wallet;
-	const { publicKey, privateKey, address, seed } = wallet;
+	const wallet = (await setupWallet(client)).wallet;
+	const address = wallet.address;
 
 	const we_want = {
 		currency: "TST",

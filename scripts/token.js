@@ -1,14 +1,14 @@
 const xrpl = require("xrpl");
 const server = require("../tools/server.js");
+const { setupWallet } = require("../tools/helpers.js");
 
 async function main() {
 	const client = new xrpl.Client(server);
 	console.log("Connecting to testnet...");
 	await client.connect();
 
-	console.log("Funding wallets...");
-	const hotWallet = (await client.fundWallet()).wallet;
-	const coldWallet = (await client.fundWallet()).wallet;
+	const hotWallet = (await setupWallet(client)).wallet;
+	const coldWallet = (await setupWallet(client)).wallet;
 
 	const coldWalletSettings = {
 		TransactionType: "AccountSet",
@@ -20,6 +20,7 @@ async function main() {
 		Flags:
 			xrpl.AccountSetTfFlags.tfDisallowXRP |
 			xrpl.AccountSetTfFlags.tfRequireDestTag,
+		// Flags are additional settings for transactions
 	};
 
 	console.log("Preparing transaction from cold wallet...");
@@ -166,5 +167,3 @@ async function main() {
 }
 
 main();
-
-// Research flags

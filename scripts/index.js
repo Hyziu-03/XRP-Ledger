@@ -1,22 +1,13 @@
 const xrpl = require("xrpl");
 const server = require("../tools/server.js");
+const { setupWallet } = require("../tools/helpers.js");
 
 async function main() {
 	const client = new xrpl.Client(server);
 	console.log("Connecting to testnet...");
 	await client.connect();
 
-	const funding = await client.fundWallet();
-	console.log("Funding wallet...");
-	const { wallet, balance } = funding;
-	const { publicKey, privateKey, classicAddress, seed } = wallet;
-
-	console.log(`Balance: ${balance} XRP`);
-	console.log("Public Key: ", publicKey);
-	console.log("Private Key: ", privateKey);
-	console.log("Address: ", classicAddress);
-	console.log("Seed: ", seed);
-
+	const wallet = (await setupWallet(client)).wallet;
 	console.log("Requesting account information...");
 	const response = await client.request({
 		command: "account_info",
@@ -45,5 +36,3 @@ async function main() {
 }
 
 main();
-
-// Explore different client request options
