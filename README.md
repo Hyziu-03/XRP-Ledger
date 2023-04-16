@@ -1,20 +1,8 @@
 # XRP Ledger
 
-## Reliable transaction submission
-
-- <https://xrpl.org/reliable-transaction-submission.html>
-
 ## Manage account settings
 
 - <https://xrpl.org/manage-account-settings.html>
-
-## Transaction metadata
-
-- <https://xrpl.org/transaction-metadata.html>
-
-## Payment types
-
-- <https://xrpl.org/payment-types.html>
 
 ## Businesses
 
