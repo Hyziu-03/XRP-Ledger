@@ -1,5 +1,9 @@
-const xrpl = require("xrpl");
-const server = require("./server.js");
+if (typeof module !== "undefined") {
+	var xrpl = require("xrpl");
+	var server = require("./server.js");
+} else {
+	console.log("This script can only be run in Node.js as a module");
+}
 
 async function main() {
 	try {

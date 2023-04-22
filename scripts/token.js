@@ -1,6 +1,13 @@
-const xrpl = require("xrpl");
-const server = require("../tools/server.js");
-const { setupWallet } = require("../tools/helpers.js");
+ // Add submitTransaction to the script and examine the...
+// ...file for the need to extract functions
+
+if (typeof module !== "undefined") {
+	var xrpl = require("xrpl");
+	var server = require("../tools/server.js");
+	var { setupWallet } = require("../tools/helpers.js");
+} else {
+	console.log("This script can only be run in Node.js as a module");
+}
 
 async function main() {
 	try {
