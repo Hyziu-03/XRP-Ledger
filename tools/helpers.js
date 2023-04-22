@@ -1,4 +1,10 @@
-const xrpl = require("xrpl");
+// Make an optional parameter describing what is happening for every function
+
+if (typeof module !== "undefined") {
+	var xrpl = require("xrpl");
+} else {
+	console.log("This script can only be run in Node.js as a module");
+}
 
 async function setupWallet(client) {
 	try {
@@ -28,6 +34,13 @@ async function setupWallet(client) {
 	}
 }
 
+async function submitTransaction(blob) {
+	console.log("Submitting transaction...");
+	const transaction = await client.submitAndWait(blob);
+	return transaction.result.meta.TransactionResult;
+}
+
 module.exports = {
 	setupWallet,
+	submitTransaction,
 };

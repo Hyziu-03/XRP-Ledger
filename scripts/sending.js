@@ -1,6 +1,13 @@
-const xrpl = require("xrpl");
-const server = require("../tools/server.js");
-require("dotenv").config();
+// Create a function to handle successes and failures
+
+if (typeof module !== "undefined") {
+	var xrpl = require("xrpl");
+	var server = require("../tools/server.js");
+	var { submitTransaction } = require("../tools/helpers.js");
+	require("dotenv").config();
+} else {
+	console.log("This script can only be run in Node.js as a module");
+}
 
 async function main() {
 	try {
@@ -41,12 +48,7 @@ async function main() {
 		console.log("Hash: ", signed.hash);
 		console.log("Blob: ", signed.tx_blob);
 
-		console.log("Submitting transaction...");
-		const transaction = await client.submitAndWait(
-			signed.tx_blob
-		);
-
-		const result = transaction.result.meta.TransactionResult;
+		const result = submitTransaction(signed.tx_blob);
 		if (result === "tesSUCCESS") {
 			console.log("Transaction successful ✅");
 		} else {

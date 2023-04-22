@@ -1,8 +1,13 @@
+// Examine this file for the need to extract functions 
 // Tickets provide a way to send transactions out of the normal order
 
-const xrpl = require("xrpl");
-const server = require("../tools/server.js");
-const { setupWallet } = require("../tools/helpers.js");
+if (typeof module !== "undefined") {
+	var xrpl = require("xrpl");
+	var server = require("../tools/server.js");
+	var { setupWallet, submitTransaction } = require("../tools/helpers.js");
+} else {
+	console.log("This script can only be run in Node.js as a module");
+}
 
 async function main() {
 	try {
@@ -19,8 +24,7 @@ async function main() {
 			account: address,
 		});
 
-		const currentSequence =
-			accountInformation.result.account_data.Sequence;
+		const currentSequence = accountInformation.result.account_data.Sequence;
 		const preparedTransaction = await client.autofill({
 			TransactionType: "TicketCreate",
 			Account: address,
@@ -32,12 +36,7 @@ async function main() {
 		console.log(`Hash: ${signedTransaction.hash}`);
 
 		console.log("Submitting transaction...");
-		const transaction = await client.submitAndWait(
-			signedTransaction.tx_blob
-		);
-		console.log(
-			`Transaction: ${JSON.stringify(transaction, null, 2)}`
-		);
+		submitTransaction(signedTransaction.tx_blob);
 
 		console.log("Requesting account information...");
 		const response = await client.request({
@@ -60,17 +59,7 @@ async function main() {
 
 		const signedFinalTransaction = wallet.sign(finalTransaction);
 		console.log(`Hash: ${signedFinalTransaction.hash}`);
-
-		console.log("Submitting ticketed transaction...");
-		const transactionBlob = signedFinalTransaction.tx_blob;
-		const ticketedTransaction = await client.submitAndWait(
-			transactionBlob
-		);
-		console.log(
-			`Ticketed transaction: ${JSON.stringify(
-				ticketedTransaction, null, 2
-			)}`
-		);
+		submitTransaction(signedFinalTransaction.tx_blob);
 
 		console.log("Disconnecting from testnet...");
 		client.disconnect();

@@ -2,6 +2,8 @@ if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
 	var { setupWallet } = require("../tools/helpers.js");
+} else {
+	console.log("This script can only be run in Node.js as a module");
 }
 
 async function main() {
@@ -30,8 +32,9 @@ async function main() {
 			const transactionCount = ledger.txn_count;
 
 			console.log(
-				`Ledger #${index} validated with ${transactionCount} transactions ✅`
+				`Ledger validated with ${transactionCount} transactions ✅`
 			);
+			console.log(`Index: ${index}`);
 		});
 
 		console.log("Disconnecting from testnet...");
