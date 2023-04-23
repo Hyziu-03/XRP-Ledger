@@ -1,10 +1,7 @@
- // Add submitTransaction to the script and examine the...
-// ...file for the need to extract functions
-
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
-	var { setupWallet } = require("../tools/helpers.js");
+	var { setupWallet, handleResult, submitTransaction } = require("../tools/helpers.js");
 } else {
 	console.log("This script can only be run in Node.js as a module");
 }
@@ -40,19 +37,7 @@ async function main() {
 		);
 		console.log("Sending transaction from cold wallet...");
 
-		const result = await client.submitAndWait(
-			signedColdWalletSettings.tx_blob
-		);
-		const hash = signedColdWalletSettings.hash;
-
-		if ((result.result.meta.TransactionResult = "tesSUCCESS")) {
-			console.log(`Transaction from cold wallet succeeded ✅`);
-			console.log(`Hash: ${hash}`);
-		} else {
-			console.log(`Result: ${result}`);
-			console.error("Cold wallet transaction failed ❌");
-		}
-
+		const result = await submitTransaction(client, signedColdWalletSettings.tx_blob);
 		const hotWalletSettings = {
 			TransactionType: "AccountSet",
 			Account: hotWallet.address,
@@ -72,19 +57,7 @@ async function main() {
 		);
 		console.log("Sending transaction from hot wallet...");
 
-		const result2 = await client.submitAndWait(
-			signedHotWalletSettings.tx_blob
-		);
-		const hash2 = signedHotWalletSettings.hash;
-
-		if ((result2.result.meta.TransactionResult = "tesSUCCESS")) {
-			console.log(`Transaction from hot wallet succeeded ✅`);
-			console.log(`Hash: ${hash2}`);
-		} else {
-			console.log(`Result: ${result2}`);
-			console.error("Hot wallet transaction failed ❌");
-		}
-
+		const result2 = await submitTransaction(client, signedHotWalletSettings.tx_blob);
 		const currencyCode = "FOO";
 		const trustLineSettings = {
 			TransactionType: "TrustSet",
@@ -105,19 +78,7 @@ async function main() {
 		);
 		console.log("Setting up trust line...");
 
-		const result3 = await client.submitAndWait(
-			signedTrustLineSettings.tx_blob
-		);
-		const hash3 = signedTrustLineSettings.hash;
-
-		if ((result3.result.meta.TransactionResult = "tesSUCCESS")) {
-			console.log(`Transaction succeeded ✅`);
-			console.log(`Hash: ${hash3}`);
-		} else {
-			console.log(`Result: ${result3}`);
-			console.error("Transaction failed ❌");
-		}
-
+		const result3 = await submitTransaction(client, signedTrustLineSettings.tx_blob);
 		const quantity = "3840";
 		const sendingSettings = {
 			TransactionType: "Payment",
@@ -140,19 +101,7 @@ async function main() {
 		);
 		console.log(`Sending ${quantity} ${currencyCode}...`);
 
-		const result4 = await client.submitAndWait(
-			signedSendingSettings.tx_blob
-		);
-		const hash4 = signedSendingSettings.hash;
-
-		if ((result4.result.meta.TransactionResult = "tesSUCCESS")) {
-			console.log(`Transaction succeeded ✅`);
-			console.log(`Hash: ${hash4}`);
-		} else {
-			console.log(`Result: ${result4}`);
-			console.error("Transaction failed ❌");
-		}
-
+		const result4 = await submitTransaction(client, signedSendingSettings.tx_blob); 
 		console.log("Getting hot wallet information...");
 		const hotWalletBalance = await client.request({
 			command: "account_lines",
@@ -181,3 +130,6 @@ async function main() {
 }
 
 main();
+
+// [x] Line do not wrap 
+// [x] There are at maximum 3 levels of indentation 

@@ -22,3 +22,6 @@ async function main() {
 }
 
 main();
+
+// [x] Line do not wrap 
+// [x] There are at maximum 3 levels of indentation 
