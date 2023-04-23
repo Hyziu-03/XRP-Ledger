@@ -1,9 +1,9 @@
-// Create a function to handle successes and failures
+// Fix Error: TypeError: Expected String
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
-	var { submitTransaction } = require("../tools/helpers.js");
+	var { submitTransaction, handleResult } = require("../tools/helpers.js");
 	require("dotenv").config();
 } else {
 	console.log("This script can only be run in Node.js as a module");
@@ -48,13 +48,8 @@ async function main() {
 		console.log("Hash: ", signed.hash);
 		console.log("Blob: ", signed.tx_blob);
 
-		const result = submitTransaction(signed.tx_blob);
-		if (result === "tesSUCCESS") {
-			console.log("Transaction successful ✅");
-		} else {
-			console.log(`Result: ${result}`);
-			console.error("Transaction failed ❌");
-		}
+		const result = await submitTransaction(client, signed.tx_blob);
+		handleResult(result);
 
 		console.log("Disconnecting from testnet...");
 		client.disconnect();

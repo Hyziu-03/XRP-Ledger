@@ -1,4 +1,5 @@
-// Examine this file for the need to extract functions 
+// Fix Error: [NotConnectedError({"command":"ledger","ledger_index":"validated"}, { command: 'ledger', ledger_index: 'validated', account: undefined })]
+// at submitTransaction (C:\Users\szymo\Documents\GitHub\XRP-Ledger\tools\helpers.js:48:9)
 // Tickets provide a way to send transactions out of the normal order
 
 if (typeof module !== "undefined") {
@@ -15,9 +16,7 @@ async function main() {
 		console.log("Connecting to testnet...");
 		await client.connect();
 
-		const wallet = (await setupWallet(client)).wallet;
-		const address = wallet.address;
-
+		const { wallet, address } = (await setupWallet(client));
 		console.log("Requesting account information...");
 		const accountInformation = await client.request({
 			command: "account_info",
@@ -34,9 +33,7 @@ async function main() {
 
 		const signedTransaction = wallet.sign(preparedTransaction);
 		console.log(`Hash: ${signedTransaction.hash}`);
-
-		console.log("Submitting transaction...");
-		submitTransaction(signedTransaction.tx_blob);
+		submitTransaction(client, signedTransaction.tx_blob);
 
 		console.log("Requesting account information...");
 		const response = await client.request({
@@ -47,19 +44,26 @@ async function main() {
 
 		const availableTickets = response.result.account_objects;
 		console.log(`Available tickets: ${availableTickets.length}`);
-		const ticket = response.result.account_objects[0].TicketSequence;
+		
+		if(availableTickets.length > 0) {
+			const ticket =
+				response.result.account_objects[0].TicketSequence;
 
-		const finalTransaction = await client.autofill({
-			TransactionType: "AccountSet",
-			Account: address,
-			TicketSequence: ticket,
-			LastLedgerSequence: null,
-			Sequence: 0,
-		});
+			const finalTransaction = await client.autofill({
+				TransactionType: "AccountSet",
+				Account: address,
+				TicketSequence: ticket,
+				LastLedgerSequence: null,
+				Sequence: 0,
+			});
 
-		const signedFinalTransaction = wallet.sign(finalTransaction);
-		console.log(`Hash: ${signedFinalTransaction.hash}`);
-		submitTransaction(signedFinalTransaction.tx_blob);
+			const signedFinalTransaction =
+				wallet.sign(finalTransaction);
+			console.log(`Hash: ${signedFinalTransaction.hash}`);
+			submitTransaction(client, signedFinalTransaction.tx_blob);
+		} else {
+			console.log("No tickets available.");
+		}
 
 		console.log("Disconnecting from testnet...");
 		client.disconnect();
