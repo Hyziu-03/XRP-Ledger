@@ -51,7 +51,7 @@ async function submitTransaction(client, blob, describe = false) {
 
 function handleResult(result) {
 	try {
-		if (result === "tesSUCCESS") {
+		if (result === "tesSUCCESS" || result === true) {
 			console.log("Transaction successful ✅");
 		} else {
 			console.log(`Result: ${result}`);

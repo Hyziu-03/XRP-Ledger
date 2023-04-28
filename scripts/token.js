@@ -1,3 +1,5 @@
+// See if this is working
+
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
@@ -35,9 +37,12 @@ async function main() {
 		const signedColdWalletSettings = coldWallet.sign(
 			preparedColdWalletSettings
 		);
+
 		console.log("Sending transaction from cold wallet...");
 
 		const result = await submitTransaction(client, signedColdWalletSettings.tx_blob);
+		handleResult(result);
+
 		const hotWalletSettings = {
 			TransactionType: "AccountSet",
 			Account: hotWallet.address,
@@ -58,6 +63,8 @@ async function main() {
 		console.log("Sending transaction from hot wallet...");
 
 		const result2 = await submitTransaction(client, signedHotWalletSettings.tx_blob);
+		handleResult(result2);
+
 		const currencyCode = "FOO";
 		const trustLineSettings = {
 			TransactionType: "TrustSet",
@@ -79,6 +86,8 @@ async function main() {
 		console.log("Setting up trust line...");
 
 		const result3 = await submitTransaction(client, signedTrustLineSettings.tx_blob);
+		handleResult(result3);
+
 		const quantity = "3840";
 		const sendingSettings = {
 			TransactionType: "Payment",
@@ -102,13 +111,16 @@ async function main() {
 		console.log(`Sending ${quantity} ${currencyCode}...`);
 
 		const result4 = await submitTransaction(client, signedSendingSettings.tx_blob); 
+		handleResult(result4);
+
 		console.log("Getting hot wallet information...");
 		const hotWalletBalance = await client.request({
 			command: "account_lines",
 			account: hotWallet.address,
 			ledger_index: "validated",
 		});
-		console.log(hotWalletBalance.result);
+		const hotWalletValidation = hotWalletBalance.result.validated;
+		handleResult(hotWalletValidation);
 
 		console.log("Getting cold wallet information...");
 		const coldWalletBalance = await client.request({
@@ -117,9 +129,8 @@ async function main() {
 			ledger_index: "validated",
 			hotwallet: [hotWallet.address],
 		});
-		console.log(
-			JSON.stringify(coldWalletBalance.result, null, 2)
-		);
+		const coldtWalletValidation = coldWalletBalance.result.validated;
+		handleResult(coldtWalletValidation);
 
 		console.log("Disconnecting from testnet...");
 		client.disconnect();

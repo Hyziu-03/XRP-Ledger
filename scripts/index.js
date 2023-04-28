@@ -1,7 +1,10 @@
+// See if this is working
+// Write down ideas for the app
+
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
-	var { setupWallet } = require("../tools/helpers.js");
+	var { setupWallet, handleResult } = require("../tools/helpers.js");
 } else {
 	console.log("This script can only be run in Node.js as a module");
 }
@@ -19,6 +22,12 @@ async function main() {
 			account: wallet.address,
 			ledger_index: "validated",
 		});
+
+		const balance = response.result.account_data.Balance;
+		console.log(`Your balance is: ${balance} XRP drops`);
+		
+		const result = response.result.account.validated;
+		handleResult(result);
 
 		console.log("Subscribing to the ledger...");
 		client.request({
