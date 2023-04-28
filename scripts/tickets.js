@@ -1,5 +1,4 @@
-// Fix Error: [NotConnectedError({"command":"ledger","ledger_index":"validated"}, { command: 'ledger', ledger_index: 'validated', account: undefined })]
-// at submitTransaction (C:\Users\szymo\Documents\GitHub\XRP-Ledger\tools\helpers.js:48:9)
+// Fix Error: connect() timed out after 10000 ms.
 // Tickets provide a way to send transactions out of the normal order
 
 if (typeof module !== "undefined") {

@@ -1,13 +1,14 @@
-// Fix Error: TypeError: Expected String
+// Fix Error: connect() timed out after 10000 ms.
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
 	var { submitTransaction, handleResult } = require("../tools/helpers.js");
-	require("dotenv").config();
 } else {
 	console.log("This script can only be run in Node.js as a module");
 }
+
+require("dotenv").config();
 
 async function main() {
 	try {
@@ -16,6 +17,7 @@ async function main() {
 		await client.connect();
 
 		console.log("Setting up wallet from seed...");
+		console.log(process.env.SEED);
 		const wallet = xrpl.Wallet.fromSeed(process.env.SEED);
 		const { publicKey, privateKey, address } = wallet;
 
