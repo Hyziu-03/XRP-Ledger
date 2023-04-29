@@ -1,4 +1,5 @@
 # XRP Ledger
 
-Time spent: 11 hours (estimating an hour a day)
-Last day of work: 98-04-2023
+XRP Ledger is a Node.js app that uses the Ripple API to interact with the XRP Ledger. You can use it to send and receive XRP, as well as to issue a new currency on the ledger.
+
+Developed in less than 11 hours
