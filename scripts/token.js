@@ -1,5 +1,3 @@
-// See if this is working
-
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
@@ -141,6 +139,3 @@ async function main() {
 }
 
 main();
-
-// [x] Line do not wrap 
-// [x] There are at maximum 3 levels of indentation 

@@ -1,5 +1,3 @@
-// Fix Error: connect() timed out after 10000 ms.
-
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
@@ -8,7 +6,8 @@ if (typeof module !== "undefined") {
 	console.log("This script can only be run in Node.js as a module");
 }
 
-require("dotenv").config();
+const SEED = "shRvy2jLMHYNNwLjBHF85RnMAGSuB";
+const DESTINATION_ADDRESS = "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59";
 
 async function main() {
 	try {
@@ -17,8 +16,7 @@ async function main() {
 		await client.connect();
 
 		console.log("Setting up wallet from seed...");
-		console.log(process.env.SEED);
-		const wallet = xrpl.Wallet.fromSeed(process.env.SEED);
+		const wallet = xrpl.Wallet.fromSeed(SEED);
 		const { publicKey, privateKey, address } = wallet;
 
 		console.log("Public Key: ", publicKey);
@@ -31,7 +29,7 @@ async function main() {
 			TransactionType: "Payment",
 			Account: address,
 			Amount: xrp,
-			Destination: process.env.DESTINATION_ADDRESS,
+			Destination: DESTINATION_ADDRESS,
 		});
 
 		const { Account, Amount, Destination, TransactionType } =
