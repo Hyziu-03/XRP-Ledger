@@ -1,4 +1,3 @@
-// See if this is working
 // Write down ideas for the app
 
 if (typeof module !== "undefined") {
@@ -24,9 +23,10 @@ async function main() {
 		});
 
 		const balance = response.result.account_data.Balance;
-		console.log(`Your balance is: ${balance} XRP drops`);
-		
-		const result = response.result.account.validated;
+		console.log(
+			`Your balance is: ${xrpl.dropsToXrp(balance)} XRP`
+		);
+		const result = response.result.validated;
 		handleResult(result);
 
 		console.log("Subscribing to the ledger...");
@@ -55,6 +55,3 @@ async function main() {
 }
 
 main();
-
-// [x] Line do not wrap 
-// [x] There are at maximum 3 levels of indentation 
