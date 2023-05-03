@@ -1,3 +1,5 @@
+"use strict";
+
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");

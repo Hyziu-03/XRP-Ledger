@@ -1,4 +1,4 @@
-// Write down ideas for the app
+"use strict";
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
