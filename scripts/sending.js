@@ -15,12 +15,14 @@ async function main() {
 	try {
 		const client = new xrpl.Client(server);
 		console.log("Connecting to testnet...");
+		const { feeCushion, maxFeeXRP } = client;
+		console.log(`Fee cushion: ${feeCushion}`);
+		console.log(`Max fee in XRP: ${maxFeeXRP}`);
 		await client.connect();
 
 		console.log("Setting up wallet from seed...");
 		const wallet = xrpl.Wallet.fromSeed(SEED);
 		const { publicKey, privateKey, address } = wallet;
-
 		console.log("Public Key: ", publicKey);
 		console.log("Private Key: ", privateKey);
 		console.log("Address: ", address);
@@ -33,13 +35,18 @@ async function main() {
 			Amount: xrp,
 			Destination: DESTINATION_ADDRESS,
 		});
-
-		const { Account, Amount, Destination, TransactionType } =
-			details;
+		const {
+			Account,
+			Amount,
+			Destination,
+			TransactionType,
+			LastLedgerSequence,
+		} = details;
 		console.log("Account: ", Account);
 		console.log(`Amount: ${xrpl.dropsToXrp(Amount)} XRP`);
 		console.log("Destination: ", Destination);
 		console.log("Transaction type: ", TransactionType);
+		console.log("Last ledger sequence: ", LastLedgerSequence);
 
 		const ledger = details.LastLedgerSequence;
 		console.log(`Cost: ${xrpl.dropsToXrp(details.Fee)} XRP`);
@@ -52,7 +59,7 @@ async function main() {
 
 		const result = await submitTransaction(client, signed.tx_blob);
 		handleResult(result);
-
+		console.log(result)
 		console.log("Disconnecting from testnet...");
 		client.disconnect();
 	} catch (error) {
