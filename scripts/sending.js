@@ -58,7 +58,14 @@ async function main() {
 		console.log("Blob: ", signed.tx_blob);
 
 		const result = await submitTransaction(client, signed.tx_blob);
-		handleResult(result);
+		try {
+			handleResult(result);
+		} catch (error) {
+			console.error(
+				"There was an error handling the transaction result ❌"
+			);
+			throw new Error(error);
+		}
 		console.log(`Is the result validated? ${result}`);
 		console.log("Disconnecting from testnet...");
 		client.disconnect();

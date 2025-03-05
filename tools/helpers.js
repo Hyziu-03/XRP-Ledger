@@ -52,18 +52,11 @@ async function submitTransaction(client, blob, describe = false) {
 }
 
 function handleResult(result) {
-	try {
-		if (result === "tesSUCCESS" || result === true) {
-			console.log("Transaction successful ✅");
-		} else {
-			console.log(`Result: ${result}`);
-			console.error("Transaction failed ❌");
-		}
-	} catch (error) {
-		console.error(
-			"There was an error handling the transaction result ❌"
-		);
-		throw new Error(error);
+	if (result === "tesSUCCESS" || result === true) {
+		console.log("Transaction successful ✅");
+	} else {
+		console.log(`Result: ${result}`);
+		console.error("Transaction failed ❌");
 	}
 }
 
@@ -113,9 +106,120 @@ function initSettings(coldWallet, hotWallet) {
 	};
 }
 
+function displayKey(type, access, address) {
+	console.log(`${type} wallet ${access} key: ${address}`);
+}
+
+function displayWalletBalance(type, ID, index, hash) {
+	const baseText = "wallet balance";
+
+	console.log(`${type} ${baseText} ID: ${ID}`);
+	console.log(`${type} ${baseText} ledger index: ${index}`);
+	console.log(`${type} ${baseText} ledger hash: ${hash}`);
+}
+
+
+async function sendTransactionFromColdWallet(
+	client,
+	coldWallet,
+	settings
+) {
+	console.log("Preparing transaction from cold wallet...");
+	const preparedColdWalletSettings = await client.autofill(
+		settings.coldWallet
+	);
+	const signedColdWalletSettings = coldWallet.sign(
+		preparedColdWalletSettings
+	);
+	console.log("Sending transaction from cold wallet...");
+	try {
+		handleResult(
+			await submitTransaction(
+				client,
+				signedColdWalletSettings.tx_blob
+			)
+		);
+	} catch (error) {
+		console.error(
+			"There was an error handling the transaction result ❌"
+		);
+		throw new Error(error);
+	}
+}
+
+async function sendTransactionFromHotWallet(
+	client,
+	hotWallet,
+	settings
+) {
+	const preparedHotWalletSettings = await client.autofill(
+		settings.hotWallet
+	);
+	const signedHotWalletSettings = hotWallet.sign(
+		preparedHotWalletSettings
+	);
+	const { hash } = signedHotWalletSettings;
+	console.log(`Transaction hash: ${hash}`);
+
+	try {
+		handleResult(
+			await submitTransaction(
+				client,
+				signedHotWalletSettings.tx_blob
+			)
+		);
+	} catch (error) {
+		console.error(
+			"There was an error handling the transaction result ❌"
+		);
+		throw new Error(error);
+	}
+}
+
+async function prepareTrustLine(client, hotWallet) {
+	const preparedTrustLineSettings = await client.autofill(
+		settings.trustLine
+	);
+	const signedTrustLineSettings = hotWallet.sign(
+		preparedTrustLineSettings
+	);
+
+	try {
+		handleResult(
+			await submitTransaction(
+				client,
+				signedTrustLineSettings.tx_blob
+			)
+		);
+	} catch (error) {
+		console.error(
+			"There was an error handling the transaction result ❌"
+		);
+		throw new Error(error);
+	}
+
+	const preparedSendingSettingsInfo = {
+		currency: preparedTrustLineSettings.LimitAmount.currency,
+		issuer: preparedTrustLineSettings.LimitAmount.issuer,
+	};
+	console.log(`Currency: ${preparedSendingSettingsInfo.currency}`);
+	console.log(`Issuer: ${preparedSendingSettingsInfo.issuer}`);
+	const signedTrustLineSettingsInfo = {
+		hash: signedTrustLineSettings.hash,
+	};
+	console.log(
+		`Transaction hash: ${signedTrustLineSettingsInfo.hash}`
+	);
+}
+
 module.exports = {
 	setupWallet,
 	submitTransaction,
 	handleResult,
 	initSettings,
+	displayKey,
+	displayWalletBalance,
+	sendTransactionFromColdWallet,
+	sendTransactionFromHotWallet,
+	prepareTrustLine,
 };

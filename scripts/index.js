@@ -59,7 +59,14 @@ async function main() {
 			`Your balance is: ${xrpl.dropsToXrp(balance)} XRP`
 		);
 		const result = response.result.validated;
-		handleResult(result);
+		try {
+			handleResult(result);
+		} catch (error) {
+			console.error(
+				"There was an error handling the transaction result ❌"
+			);
+			throw new Error(error);
+		}
 		console.log(`Is the result validated? ${result}`);
 
 		console.log("Subscribing to the ledger...");
