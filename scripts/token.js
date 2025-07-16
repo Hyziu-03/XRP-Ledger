@@ -36,14 +36,17 @@ async function main() {
 		displayKey("Cold", "public", coldWallet.publicKey);
 		displayKey("Cold", "private", coldWallet.privateKey);
 		
-		sendTransactionFromColdWallet(client, coldWallet, settings);
-		sendTransactionFromHotWallet(client, hotWallet, settings);
-		prepareTrustLine(client, hotWallet);
+		await sendTransactionFromColdWallet(client, coldWallet, settings);
+		await sendTransactionFromHotWallet(client, hotWallet, settings);
+		await prepareTrustLine(client, hotWallet, settings);
 
 		console.log("Preparing transaction...");
+		const ledgerInfo = await client.getLedgerIndex();
 		const preparedSendingSettings = await client.autofill(
 			settings.sending
 		);
+		preparedSendingSettings.LastLedgerSequence = ledgerInfo + 20;
+		
 		const signedSendingSettings = coldWallet.sign(
 			preparedSendingSettings
 		);

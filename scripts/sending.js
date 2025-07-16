@@ -27,14 +27,24 @@ async function main() {
 		console.log("Private Key: ", privateKey);
 		console.log("Address: ", address);
 
-		const xrp = xrpl.xrpToDrops("10");
+		const xrp = xrpl.xrpToDrops("1");
 		console.log("Preparing transaction details...");
-		const details = await client.autofill({
-			TransactionType: "Payment",
-			Account: address,
-			Amount: xrp,
-			Destination: DESTINATION_ADDRESS,
-		});
+		const ledgerInfo = await client.getLedgerIndex();
+		let details;
+		try {
+			details = await client.autofill({
+				TransactionType: "Payment",
+				Account: address,
+				Amount: xrp,
+				Destination: DESTINATION_ADDRESS,
+			});
+			details.LastLedgerSequence = ledgerInfo + 20;
+		} catch (error) {
+			console.error(
+				"There was an error preparing transaction details ❌"
+			);
+			throw new Error(error);
+		}
 		const {
 			Account,
 			Amount,

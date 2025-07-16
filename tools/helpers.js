@@ -125,9 +125,12 @@ async function sendTransactionFromColdWallet(
 	settings
 ) {
 	console.log("Preparing transaction from cold wallet...");
+	const ledgerInfo = await client.getLedgerIndex();
 	const preparedColdWalletSettings = await client.autofill(
 		settings.coldWallet
 	);
+	preparedColdWalletSettings.LastLedgerSequence = ledgerInfo + 20;
+	
 	const signedColdWalletSettings = coldWallet.sign(
 		preparedColdWalletSettings
 	);
@@ -152,9 +155,12 @@ async function sendTransactionFromHotWallet(
 	hotWallet,
 	settings
 ) {
+	const ledgerInfo = await client.getLedgerIndex();
 	const preparedHotWalletSettings = await client.autofill(
 		settings.hotWallet
 	);
+	preparedHotWalletSettings.LastLedgerSequence = ledgerInfo + 20;
+	
 	const signedHotWalletSettings = hotWallet.sign(
 		preparedHotWalletSettings
 	);
@@ -176,10 +182,13 @@ async function sendTransactionFromHotWallet(
 	}
 }
 
-async function prepareTrustLine(client, hotWallet) {
+async function prepareTrustLine(client, hotWallet, settings) {
+	const ledgerInfo = await client.getLedgerIndex();
 	const preparedTrustLineSettings = await client.autofill(
 		settings.trustLine
 	);
+	preparedTrustLineSettings.LastLedgerSequence = ledgerInfo + 20;
+	
 	const signedTrustLineSettings = hotWallet.sign(
 		preparedTrustLineSettings
 	);
