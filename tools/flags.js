@@ -1,7 +1,9 @@
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 } else {
-	console.info("This script can only be run in Node.js as a module");
+	console.info(
+		"This script can only be run in Node.js as a module"
+	);
 }
 
 function initSettings(coldWallet, hotWallet) {

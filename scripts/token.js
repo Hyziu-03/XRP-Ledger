@@ -3,25 +3,34 @@
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
-	var { 
-		setupWallet, 
-		handleResult, 
+	var {
+		setupWallet,
+		handleResult,
 		submitTransaction,
+		
 		displayKey,
 		sendTransactionFromColdWallet,
 		sendTransactionFromHotWallet,
-		prepareTrustLine
+		prepareTrustLine,
 	} = require("../tools/helpers.js");
 	var initSettings = require("../tools/flags.js");
+
+	try {
+		main();
+	} catch (error) {
+		console.error("There was en error in the main function ❌");
+		throw new Error(error);
+	}
 } else {
-	console.info("This script can only be run in Node.js as a module");
+	console.warn(
+		"This script can only be run in Node.js as a module"
+	);
 }
 
 async function main() {
 	try {
 		const client = new xrpl.Client(server);
 		console.info("Connecting to testnet...");
-		const { feeCushion, maxFeeXRP } = client;
 		await client.connect();
 
 		const hotWallet = (await setupWallet(client)).wallet;
@@ -32,9 +41,17 @@ async function main() {
 		displayKey("Hot", "private", hotWallet.privateKey);
 		displayKey("Cold", "public", coldWallet.publicKey);
 		displayKey("Cold", "private", coldWallet.privateKey);
-		
-		await sendTransactionFromColdWallet(client, coldWallet, settings);
-		await sendTransactionFromHotWallet(client, hotWallet, settings);
+
+		await sendTransactionFromColdWallet(
+			client,
+			coldWallet,
+			settings
+		);
+		await sendTransactionFromHotWallet(
+			client,
+			hotWallet,
+			settings
+		);
 		await prepareTrustLine(client, hotWallet, settings);
 
 		const ledgerInfo = await client.getLedgerIndex();
@@ -42,10 +59,11 @@ async function main() {
 			settings.sending
 		);
 		preparedSendingSettings.LastLedgerSequence = ledgerInfo + 20;
-		
+
 		const signedSendingSettings = coldWallet.sign(
 			preparedSendingSettings
 		);
+
 		try {
 			handleResult(
 				await submitTransaction(
@@ -59,12 +77,14 @@ async function main() {
 			);
 			throw new Error(error);
 		}
+
 		const hotWalletBalance = await client.request({
 			command: "account_lines",
 			account: hotWallet.address,
 			ledger_index: "validated",
 		});
 		const hotWalletValidation = hotWalletBalance.result.validated;
+
 		try {
 			handleResult(hotWalletValidation);
 		} catch (error) {
@@ -73,13 +93,16 @@ async function main() {
 			);
 			throw new Error(error);
 		}
+
 		const coldWalletBalance = await client.request({
 			command: "gateway_balances",
 			account: coldWallet.address,
 			ledger_index: "validated",
 			hotwallet: [hotWallet.address],
 		});
-		const coldtWalletValidation = coldWalletBalance.result.validated;
+		const coldtWalletValidation =
+			coldWalletBalance.result.validated;
+
 		try {
 			handleResult(coldtWalletValidation);
 		} catch (error) {
@@ -95,5 +118,3 @@ async function main() {
 		throw new Error(error);
 	}
 }
-
-main();

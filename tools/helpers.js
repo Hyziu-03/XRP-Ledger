@@ -3,13 +3,14 @@
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 } else {
-	console.info("This script can only be run in Node.js as a module");
+	console.info(
+		"This script can only be run in Node.js as a module"
+	);
 }
 
 async function setupWallet(client) {
 	try {
 		const funding = await client.fundWallet();
-
 		const { wallet, balance } = funding;
 		const { publicKey, privateKey, classicAddress, seed } =
 			wallet;
@@ -34,7 +35,7 @@ async function setupWallet(client) {
 	}
 }
 
-async function submitTransaction(client, blob, describe = false) {
+async function submitTransaction(client, blob) {
 	try {
 		const transaction = await client.submitAndWait(blob);
 		return transaction.result.meta.TransactionResult;
@@ -52,6 +53,9 @@ function handleResult(result) {
 		: console.error(`Result: ${result} \nTransaction failed ❌"`);
 }
 
+
+
+
 function displayKey(type, access, address) {
 	console.info(`${type} wallet ${access} key: ${address}`);
 }
@@ -68,10 +72,10 @@ async function sendTransactionFromColdWallet(
 		);
 		preparedColdWalletSettings.LastLedgerSequence =
 			ledgerInfo + 20;
-
 		const signedColdWalletSettings = coldWallet.sign(
 			preparedColdWalletSettings
 		);
+
 		try {
 			handleResult(
 				await submitTransaction(
@@ -131,7 +135,6 @@ async function prepareTrustLine(client, hotWallet, settings) {
 		settings.trustLine
 	);
 	preparedTrustLineSettings.LastLedgerSequence = ledgerInfo + 20;
-
 	const signedTrustLineSettings = hotWallet.sign(
 		preparedTrustLineSettings
 	);
@@ -156,12 +159,26 @@ async function prepareTrustLine(client, hotWallet, settings) {
 	};
 	console.info(`Currency: ${preparedSendingSettingsInfo.currency}`);
 	console.info(`Issuer: ${preparedSendingSettingsInfo.issuer}`);
+
 	const signedTrustLineSettingsInfo = {
 		hash: signedTrustLineSettings.hash,
 	};
 	console.info(
 		`Transaction hash: ${signedTrustLineSettingsInfo.hash}`
 	);
+}
+
+function getLedgerInfo(result) {
+	const ledgerHash = result.ledger_hash;
+	console.info(`Ledger hash: ${ledgerHash}`);
+
+	const ledgerIndex = result.ledger_index;
+	console.info(`Ledger index: ${ledgerIndex}`);
+}
+
+function getAccountBalance(account_data) {
+	const balance = account_data.Balance;
+	console.info(`Your balance is: ${xrpl.dropsToXrp(balance)} XRP`);
 }
 
 module.exports = {
@@ -172,4 +189,6 @@ module.exports = {
 	sendTransactionFromColdWallet,
 	sendTransactionFromHotWallet,
 	prepareTrustLine,
+	getLedgerInfo,
+	getAccountBalance,
 };

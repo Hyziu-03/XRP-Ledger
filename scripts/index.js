@@ -3,24 +3,37 @@
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
-	var { setupWallet, handleResult } = require("../tools/helpers.js");
+	var {
+		setupWallet,
+		handleResult,
+		
+		getLedgerInfo,
+		getAccountBalance,
+	} = require("../tools/helpers.js");
+	
+	try {
+		main();
+	} catch (error) {
+		console.error("There was en error in the main function ❌");
+		throw new Error(error);
+	}
 } else {
-	console.warn("This script can only be run in Node.js as a module");
+	console.warn(
+		"This script can only be run in Node.js as a module"
+	);
 }
 
 async function main() {
 	try {
 		const client = new xrpl.Client(server);
 		console.info("Connecting to testnet...");
-		const { feeCushion, maxFeeXRP } = client;
-		console.info(
-			`Fee cushion: ${feeCushion} \nMax fee in XRP: ${maxFeeXRP}`
-		);
 		await client.connect();
 
 		const wallet = (await setupWallet(client)).wallet;
-		const { publicKey, privateKey, classicAddress, seed } = wallet;
-		console.info(`Wallet public key: ${publicKey}`);
+		const { publicKey, privateKey, classicAddress, seed } =
+			wallet;
+		
+			console.info(`Wallet public key: ${publicKey}`);
 		console.info(`Wallet private key: ${privateKey}`);
 		console.info(`Wallet classic address: ${classicAddress}`);
 		console.info(`Wallet seed: ${seed}`);
@@ -31,19 +44,14 @@ async function main() {
 			ledger_index: "validated",
 		});
 
-		const ledgerHash = response.result.ledger_hash;
-		console.info(`Ledger hash: ${ledgerHash}`);
-		const ledgerIndex = response.result.ledger_index;
-		console.info(`Ledger index: ${ledgerIndex}`);
-		const validated = response.result.validated;
-		console.info(`Validated: ${validated}`);
+		getLedgerInfo(response.result);
+		getAccountBalance(response.result.account_data);
 
-		const balance = response.result.account_data.Balance;
-		console.info(
-			`Your balance is: ${xrpl.dropsToXrp(balance)} XRP`
-		);
-		const result = response.result.validated;
+		let result;
 		try {
+			result = response.result.validated;
+			console.info(`Validated: ${result}`);
+
 			handleResult(result);
 		} catch (error) {
 			console.error(
@@ -64,5 +72,3 @@ async function main() {
 		throw new Error(error);
 	}
 }
-
-main();
