@@ -3,14 +3,17 @@
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("../tools/server.js");
+
 	var {
 		setupWallet,
 		handleResult,
-		
+	} = require("../tools/helpers.js");
+
+	var {
 		getLedgerInfo,
 		getAccountBalance,
-	} = require("../tools/helpers.js");
-	
+	} = require("../tools/index.js");
+
 	try {
 		main();
 	} catch (error) {
@@ -32,8 +35,8 @@ async function main() {
 		const wallet = (await setupWallet(client)).wallet;
 		const { publicKey, privateKey, classicAddress, seed } =
 			wallet;
-		
-			console.info(`Wallet public key: ${publicKey}`);
+
+		console.info(`Wallet public key: ${publicKey}`);
 		console.info(`Wallet private key: ${privateKey}`);
 		console.info(`Wallet classic address: ${classicAddress}`);
 		console.info(`Wallet seed: ${seed}`);

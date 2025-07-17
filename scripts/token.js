@@ -7,12 +7,13 @@ if (typeof module !== "undefined") {
 		setupWallet,
 		handleResult,
 		submitTransaction,
-		
+	} = require("../tools/helpers.js");
+	var {
 		displayKey,
 		sendTransactionFromColdWallet,
 		sendTransactionFromHotWallet,
 		prepareTrustLine,
-	} = require("../tools/helpers.js");
+	} = require("../tools/token.js");
 	var initSettings = require("../tools/flags.js");
 
 	try {
