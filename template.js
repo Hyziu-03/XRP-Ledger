@@ -2,7 +2,7 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var server = require("./server.js");
+	var server = require("./tools/server.js");
 
 	try {
 		main();

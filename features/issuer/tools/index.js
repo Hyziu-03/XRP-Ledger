@@ -2,7 +2,7 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var { submitTransaction, handleResult } = require("./helpers.js");
+	var { submitTransaction, handleResult } = require("../../../tools/helpers.js");
 } else {
 	console.info(
 		"This script can only be run in Node.js as a module"

@@ -2,19 +2,19 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var server = require("../tools/server.js");
+	var server = require("../../tools/server.js");
 	var {
 		setupWallet,
 		handleResult,
 		submitTransaction,
-	} = require("../tools/helpers.js");
+	} = require("../../tools/helpers.js");
 	var {
 		displayKey,
 		sendTransactionFromColdWallet,
 		sendTransactionFromHotWallet,
 		prepareTrustLine,
-	} = require("../tools/token.js");
-	var initSettings = require("../tools/flags.js");
+	} = require("./tools/index.js");
+	var initSettings = require("./tools/flags.js");
 
 	try {
 		main();

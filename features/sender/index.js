@@ -2,12 +2,12 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var server = require("../tools/server.js");
+	var server = require("../../tools/server.js");
 	var {
 		submitTransaction,
 		handleResult,
-	} = require("../tools/helpers.js");
-	var { SEED, DESTINATION_ADDRESS } = require("../tools/const.js");
+	} = require("../../tools/helpers.js");
+	var { SEED, DESTINATION_ADDRESS } = require("./tools/index.js");
 	
 	try {
 		main();

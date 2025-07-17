@@ -2,17 +2,17 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var server = require("../tools/server.js");
+	var server = require("../../tools/server.js");
 
 	var {
 		setupWallet,
 		handleResult,
-	} = require("../tools/helpers.js");
+	} = require("../../tools/helpers.js");
 
 	var {
 		getLedgerInfo,
 		getAccountBalance,
-	} = require("../tools/index.js");
+	} = require("./tools/index.js");
 
 	try {
 		main();
