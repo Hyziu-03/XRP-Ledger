@@ -10,9 +10,9 @@ if (typeof module !== "undefined") {
 	} = require("../../tools/helpers.js");
 
 	var {
-		getLedgerInfo,
-		getAccountBalance,
-	} = require("./tools/index.js");
+		getMainLedgerInfo,
+		getMainAccountBalance,
+	} = require("./tools/index.ts");
 
 	try {
 		main();
@@ -26,30 +26,31 @@ if (typeof module !== "undefined") {
 	);
 }
 
-async function main() {
+async function main(): Promise<void> {
 	try {
-		const client = new xrpl.Client(server);
+		const client: any = new xrpl.Client(server);
 		console.info("Connecting to testnet...");
 		await client.connect();
 
-		const wallet = (await setupWallet(client)).wallet;
-		const { publicKey, classicAddress, seed } =
-			wallet;
+		const wallet: any = (await setupWallet(client)).wallet;
+		const publicKey: string = wallet.publicKey;
+		const classicAddress: string = wallet.classicAddress;
+		const seed: string = wallet.seed;
 
 		console.info(`Wallet public key: ${publicKey}`);
 		console.info(`Wallet classic address: ${classicAddress}`);
 		console.info(`Wallet seed: ${seed}`);
 
-		const response = await client.request({
+		const response: any = await client.request({
 			command: "account_info",
 			account: wallet.address,
 			ledger_index: "validated",
 		});
 
-		getLedgerInfo(response.result);
-		getAccountBalance(response.result.account_data);
+		getMainLedgerInfo(response.result);
+		getMainAccountBalance(response.result.account_data);
 
-		let result;
+		let result: string | boolean;
 		try {
 			result = response.result.validated;
 			console.info(`Validated: ${result}`);

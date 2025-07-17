@@ -8,7 +8,10 @@ if (typeof module !== "undefined") {
 	);
 }
 
-function getLedgerInfo(result) {
+export function getMainLedgerInfo(result: {
+	ledger_hash: string;
+	ledger_index: string;
+}): void {
 	const ledgerHash = result.ledger_hash;
 	console.info(`Ledger hash: ${ledgerHash}`);
 
@@ -16,12 +19,9 @@ function getLedgerInfo(result) {
 	console.info(`Ledger index: ${ledgerIndex}`);
 }
 
-function getAccountBalance(account_data) {
+export function getMainAccountBalance(account_data: {
+	Balance: string;
+}): void {
 	const balance = account_data.Balance;
 	console.info(`Your balance is: ${xrpl.dropsToXrp(balance)} XRP`);
 }
-
-module.exports = {
-	getLedgerInfo,
-	getAccountBalance,
-};
