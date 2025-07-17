@@ -3,17 +3,17 @@
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var server = require("./server.js");
-} else console.log("This script can only be run in Node.js as a module");
+} else console.info("This script can only be run in Node.js as a module");
 
 
 async function main() {
 	const client = new xrpl.Client(server);
-	console.log("Connecting to testnet...");
+	console.info("Connecting to testnet...");
 	await client.connect();
 
 	// ...
 
-	console.log("Disconnecting from testnet...");
+	console.info("Disconnecting from testnet...");
 	client.disconnect();
 }
 
