@@ -12,12 +12,11 @@ async function setupWallet(client) {
 	try {
 		const funding = await client.fundWallet();
 		const { wallet, balance } = funding;
-		const { publicKey, privateKey, classicAddress, seed } =
+		const { publicKey, classicAddress, seed } =
 			wallet;
 
 		console.info(`Balance: ${balance} XRP`);
 		console.info("Public Key: ", publicKey);
-		console.info("Private Key: ", privateKey);
 		console.info("Address: ", classicAddress);
 		console.info("Seed: ", seed);
 
@@ -25,7 +24,6 @@ async function setupWallet(client) {
 			wallet: wallet,
 			balance: balance,
 			publicKey: publicKey,
-			privateKey: privateKey,
 			address: classicAddress,
 			seed: seed,
 		};

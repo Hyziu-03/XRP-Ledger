@@ -39,9 +39,7 @@ async function main() {
 		const settings = initSettings(coldWallet, hotWallet);
 
 		displayKey("Hot", "public", hotWallet.publicKey);
-		displayKey("Hot", "private", hotWallet.privateKey);
 		displayKey("Cold", "public", coldWallet.publicKey);
-		displayKey("Cold", "private", coldWallet.privateKey);
 
 		await sendTransactionFromColdWallet(
 			client,

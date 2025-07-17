@@ -33,11 +33,10 @@ async function main() {
 		await client.connect();
 
 		const wallet = (await setupWallet(client)).wallet;
-		const { publicKey, privateKey, classicAddress, seed } =
+		const { publicKey, classicAddress, seed } =
 			wallet;
 
 		console.info(`Wallet public key: ${publicKey}`);
-		console.info(`Wallet private key: ${privateKey}`);
 		console.info(`Wallet classic address: ${classicAddress}`);
 		console.info(`Wallet seed: ${seed}`);
 

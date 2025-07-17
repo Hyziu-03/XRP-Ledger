@@ -28,10 +28,9 @@ async function main() {
 		await client.connect();
 
 		const wallet = xrpl.Wallet.fromSeed(SEED);
-		const { publicKey, privateKey, address } = wallet;
+		const { publicKey, address } = wallet;
 		
 		console.info("Public Key: ", publicKey);
-		console.info("Private Key: ", privateKey);
 		console.info("Address: ", address);
 
 		const xrp = xrpl.xrpToDrops("1");
