@@ -48,7 +48,7 @@ async function submitTransaction(client, blob) {
 function handleResult(result) {
 	result === "tesSUCCESS" || result === true
 		? console.info("Transaction successful ✅")
-		: console.error(`Result: ${result} \nTransaction failed ❌"`);
+		: console.error(`Result: ${result} \nTransaction failed ❌`);
 }
 
 module.exports = {

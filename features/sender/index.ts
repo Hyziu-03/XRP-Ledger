@@ -7,13 +7,16 @@ if (typeof module !== "undefined") {
 		submitTransaction,
 		handleResult,
 	} = require("../../tools/helpers.js");
-	var { SEED, DESTINATION_ADDRESS } = require("./tools/index.js");
-	
+	var {
+		WALLET_SEED: SEED,
+		WALLET_DESTINATION_ADDRESS: DESTINATION_ADDRESS,
+	} = require("./tools/index.ts");
+
 	try {
 		main();
 	} catch (error) {
 		console.error("There was en error in the main function ❌");
-		throw new Error(error);
+		throw new Error(String(error));
 	}
 } else {
 	console.warn(
@@ -21,22 +24,23 @@ if (typeof module !== "undefined") {
 	);
 }
 
-async function main() {
+async function main(): Promise<void> {
 	try {
-		const client = new xrpl.Client(server);
+		const client: any = new xrpl.Client(server);
 		console.info("Connecting to testnet...");
 		await client.connect();
 
-		const wallet = xrpl.Wallet.fromSeed(SEED);
-		const { publicKey, address } = wallet;
-		
+		const wallet: any = xrpl.Wallet.fromSeed(SEED);
+		const publicKey: string = wallet.publicKey;
+		const address: string = wallet.address;
+
 		console.info("Public Key: ", publicKey);
 		console.info("Address: ", address);
 
-		const xrp = xrpl.xrpToDrops("1");
-		const ledgerInfo = await client.getLedgerIndex();
-		
-		let details;
+		const xrp: any = xrpl.xrpToDrops("1");
+		const ledgerInfo: any = await client.getLedgerIndex();
+
+		let details: any;
 		try {
 			details = await client.autofill({
 				TransactionType: "Payment",
@@ -49,33 +53,30 @@ async function main() {
 			console.error(
 				"There was an error preparing transaction details ❌"
 			);
-			throw new Error(error);
+			throw new Error(String(error));
 		}
 
 		console.info(`Cost: ${xrpl.dropsToXrp(details.Fee)} XRP`);
-		const signed = wallet.sign(details);
+		const signed: any = wallet.sign(details);
 		console.info("Hash: ", signed.hash);
-		
-		let result;
+
+		let result: any;
 		try {
-			result = await submitTransaction(
-				client,
-				signed.tx_blob
-			);
+			result = await submitTransaction(client, signed.tx_blob);
 			handleResult(result);
 		} catch (error) {
 			console.error(
 				"There was an error handling the transaction result ❌"
 			);
-			throw new Error(error);
+			throw new Error(String(error));
 		}
-		
+
 		console.info("Disconnecting from testnet...");
 		client.disconnect();
 	} catch (error) {
 		console.error(
 			"There was an error sending the transaction ❌"
 		);
-		throw new Error(error);
+		throw new Error(String(error));
 	}
 }

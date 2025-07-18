@@ -1,9 +1,0 @@
-"use strict";
-
-const SEED = "shRvy2jLMHYNNwLjBHF85RnMAGSuB";
-const DESTINATION_ADDRESS = "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59";
-
-module.exports = {
-	SEED,
-	DESTINATION_ADDRESS,
-};
