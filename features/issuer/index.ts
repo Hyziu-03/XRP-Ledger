@@ -9,15 +9,16 @@ if (typeof module !== "undefined") {
 		submitTransaction,
 	} = require("../../tools/helpers.js");
 	var {
-		displayKey,
-		sendTransactionFromColdWallet,
-		sendTransactionFromHotWallet,
-		prepareTrustLine,
-	} = require("./tools/index.js");
-	var initSettings = require("./tools/flags.js");
+		displayWalletKey: displayKey,
+		sendTransactionFromColdWalletNow:
+			sendTransactionFromColdWallet,
+		sendTransactionFromHotWalletNow: sendTransactionFromHotWallet,
+		prepareTransactionTrustLine: prepareTrustLine,
+	} = require("./tools/index");
+	var initSettings = require("./tools/flags");
 
 	try {
-		main();
+		issueCurrency();
 	} catch (error) {
 		console.error("There was en error in the main function ❌");
 		throw new Error(error);
@@ -28,15 +29,15 @@ if (typeof module !== "undefined") {
 	);
 }
 
-async function main() {
+async function issueCurrency(): Promise<void> {
 	try {
-		const client = new xrpl.Client(server);
+		const client: any = new xrpl.Client(server);
 		console.info("Connecting to testnet...");
 		await client.connect();
 
-		const hotWallet = (await setupWallet(client)).wallet;
-		const coldWallet = (await setupWallet(client)).wallet;
-		const settings = initSettings(coldWallet, hotWallet);
+		const hotWallet: any = (await setupWallet(client)).wallet;
+		const coldWallet: any = (await setupWallet(client)).wallet;
+		const settings: any = initSettings(coldWallet, hotWallet);
 
 		displayKey("Hot", "public", hotWallet.publicKey);
 		displayKey("Cold", "public", coldWallet.publicKey);
@@ -53,8 +54,8 @@ async function main() {
 		);
 		await prepareTrustLine(client, hotWallet, settings);
 
-		const ledgerInfo = await client.getLedgerIndex();
-		const preparedSendingSettings = await client.autofill(
+		const ledgerInfo: any = await client.getLedgerIndex();
+		const preparedSendingSettings: any = await client.autofill(
 			settings.sending
 		);
 		preparedSendingSettings.LastLedgerSequence = ledgerInfo + 20;
@@ -77,12 +78,13 @@ async function main() {
 			throw new Error(error);
 		}
 
-		const hotWalletBalance = await client.request({
+		const hotWalletBalance: any = await client.request({
 			command: "account_lines",
 			account: hotWallet.address,
 			ledger_index: "validated",
 		});
-		const hotWalletValidation = hotWalletBalance.result.validated;
+		const hotWalletValidation: boolean | string =
+			hotWalletBalance.result.validated;
 
 		try {
 			handleResult(hotWalletValidation);
@@ -93,13 +95,13 @@ async function main() {
 			throw new Error(error);
 		}
 
-		const coldWalletBalance = await client.request({
+		const coldWalletBalance: any = await client.request({
 			command: "gateway_balances",
 			account: coldWallet.address,
 			ledger_index: "validated",
 			hotwallet: [hotWallet.address],
 		});
-		const coldtWalletValidation =
+		const coldtWalletValidation: boolean | string =
 			coldWalletBalance.result.validated;
 
 		try {

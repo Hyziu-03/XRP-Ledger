@@ -8,7 +8,10 @@ if (typeof module !== "undefined") {
 	);
 }
 
-function initSettings(coldWallet, hotWallet) {
+function initTransactionSettings(
+	coldWallet: any,
+	hotWallet: any
+): any {
 	return {
 		coldWallet: {
 			TransactionType: "AccountSet",
@@ -53,4 +56,4 @@ function initSettings(coldWallet, hotWallet) {
 	};
 }
 
-module.exports = initSettings;
+module.exports = initTransactionSettings;

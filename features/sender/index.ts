@@ -13,7 +13,7 @@ if (typeof module !== "undefined") {
 	} = require("./tools/index.ts");
 
 	try {
-		main();
+		sendToken();
 	} catch (error) {
 		console.error("There was en error in the main function ❌");
 		throw new Error(String(error));
@@ -24,7 +24,7 @@ if (typeof module !== "undefined") {
 	);
 }
 
-async function main(): Promise<void> {
+async function sendToken(): Promise<void> {
 	try {
 		const client: any = new xrpl.Client(server);
 		console.info("Connecting to testnet...");
