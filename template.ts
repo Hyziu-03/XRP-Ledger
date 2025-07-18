@@ -16,12 +16,12 @@ if (typeof module !== "undefined") {
 	);
 
 async function main() {
-	const client = new xrpl.Client(serverURL);
+	const userClient = new xrpl.Client(serverURL);
 	console.info("Connecting to testnet...");
-	await client.connect();
+	await userClient.connect();
 
 	// ...
 
 	console.info("Disconnecting from testnet...");
-	client.disconnect();
+	userClient.disconnect();
 }

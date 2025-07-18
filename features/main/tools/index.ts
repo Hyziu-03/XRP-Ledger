@@ -22,6 +22,8 @@ export function getMainLedgerInfo(result: {
 export function getMainAccountBalance(account_data: {
 	Balance: string;
 }): void {
-	const balance = account_data.Balance;
-	console.info(`Your balance is: ${xrpl.dropsToXrp(balance)} XRP`);
+	const accountBalance = account_data.Balance;
+	console.info(
+		`Your balance is: ${xrpl.dropsToXrp(accountBalance)} XRP`
+	);
 }

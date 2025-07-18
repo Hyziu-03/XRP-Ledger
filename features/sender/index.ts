@@ -26,26 +26,26 @@ if (typeof module !== "undefined") {
 
 async function sendToken(): Promise<void> {
 	try {
-		const client: any = new xrpl.Client(serverURL);
+		const userClient: any = new xrpl.Client(serverURL);
 		console.info("Connecting to testnet...");
-		await client.connect();
+		await userClient.connect();
 
-		const wallet: any = xrpl.Wallet.fromSeed(SEED);
-		const publicKey: string = wallet.publicKey;
-		const address: string = wallet.address;
+		const clientWallet: any = xrpl.Wallet.fromSeed(SEED);
+		const publicKey: string = clientWallet.publicKey;
+		const clientAddress: string = clientWallet.address;
 
 		console.info("Public Key: ", publicKey);
-		console.info("Address: ", address);
+		console.info("Address: ", clientAddress);
 
-		const xrp: any = xrpl.xrpToDrops("1");
-		const ledgerInfo: any = await client.getLedgerIndex();
+		const xrpAmount: any = xrpl.xrpToDrops("1");
+		const ledgerInfo: any = await userClient.getLedgerIndex();
 
 		let details: any;
 		try {
-			details = await client.autofill({
+			details = await userClient.autofill({
 				TransactionType: "Payment",
-				Account: address,
-				Amount: xrp,
+				Account: clientAddress,
+				Amount: xrpAmount,
 				Destination: DESTINATION_ADDRESS,
 			});
 			details.LastLedgerSequence = ledgerInfo + 20;
@@ -57,14 +57,14 @@ async function sendToken(): Promise<void> {
 		}
 
 		console.info(`Cost: ${xrpl.dropsToXrp(details.Fee)} XRP`);
-		const signed: any = wallet.sign(details);
-		console.info("Hash: ", signed.hash);
+		const signedTransactionStatus: any = clientWallet.sign(details);
+		console.info("Hash: ", signedTransactionStatus.hash);
 
 		let result: any;
 		try {
 			result = await submitTransactionNow(
-				client,
-				signed.tx_blob
+				userClient,
+				signedTransactionStatus.tx_blob
 			);
 			handleTransactionResult(result);
 		} catch (error) {
@@ -75,7 +75,7 @@ async function sendToken(): Promise<void> {
 		}
 
 		console.info("Disconnecting from testnet...");
-		client.disconnect();
+		userClient.disconnect();
 	} catch (error) {
 		console.error(
 			"There was an error sending the transaction ❌"

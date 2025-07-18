@@ -28,32 +28,32 @@ if (typeof module !== "undefined") {
 
 async function getAccountInfo(): Promise<void> {
 	try {
-		const client: any = new xrpl.Client(serverURL);
+		const userClient: any = new xrpl.Client(serverURL);
 		console.info("Connecting to testnet...");
-		await client.connect();
+		await userClient.connect();
 
-		const wallet: any = (await setupTransactionWallet(client))
+		const clientWallet: any = (await setupTransactionWallet(userClient))
 			.wallet;
-		const publicKey: string = wallet.publicKey;
-		const classicAddress: string = wallet.classicAddress;
-		const seed: string = wallet.seed;
+		const publicKey: string = clientWallet.publicKey;
+		const classicAddress: string = clientWallet.classicAddress;
+		const walletSeed: string = clientWallet.seed;
 
 		console.info(`Wallet public key: ${publicKey}`);
 		console.info(`Wallet classic address: ${classicAddress}`);
-		console.info(`Wallet seed: ${seed}`);
+		console.info(`Wallet seed: ${walletSeed}`);
 
-		const response: any = await client.request({
+		const ledgerResponse: any = await userClient.request({
 			command: "account_info",
-			account: wallet.address,
+			account: clientWallet.address,
 			ledger_index: "validated",
 		});
 
-		getMainLedgerInfo(response.result);
-		getMainAccountBalance(response.result.account_data);
+		getMainLedgerInfo(ledgerResponse.result);
+		getMainAccountBalance(ledgerResponse.result.account_data);
 
 		let result: string | boolean;
 		try {
-			result = response.result.validated;
+			result = ledgerResponse.result.validated;
 			console.info(`Validated: ${result}`);
 
 			handleTransactionResult(result);
@@ -64,13 +64,13 @@ async function getAccountInfo(): Promise<void> {
 			throw new Error(error);
 		}
 
-		client.request({
+		userClient.request({
 			command: "subscribe",
 			streams: ["ledger"],
 		});
 
 		console.info("Disconnecting from testnet...");
-		client.disconnect();
+		userClient.disconnect();
 	} catch (error) {
 		console.error("There was an error in the main function ❌");
 		throw new Error(error);

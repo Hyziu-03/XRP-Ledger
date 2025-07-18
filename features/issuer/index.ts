@@ -31,15 +31,15 @@ if (typeof module !== "undefined") {
 
 async function issueCurrency(): Promise<void> {
 	try {
-		const client: any = new xrpl.Client(serverURL);
+		const userClient: any = new xrpl.Client(serverURL);
 		console.info("Connecting to testnet...");
-		await client.connect();
+		await userClient.connect();
 
-		const hotWallet: any = (await setupTransactionWallet(client))
+		const hotWallet: any = (await setupTransactionWallet(userClient))
 			.wallet;
-		const coldWallet: any = (await setupTransactionWallet(client))
+		const coldWallet: any = (await setupTransactionWallet(userClient))
 			.wallet;
-		const settings: any = initTransactionSettings(
+		const transactionSettings: any = initTransactionSettings(
 			coldWallet,
 			hotWallet
 		);
@@ -48,20 +48,20 @@ async function issueCurrency(): Promise<void> {
 		displayKey("Cold", "public", coldWallet.publicKey);
 
 		await sendTransactionFromColdWallet(
-			client,
+			userClient,
 			coldWallet,
-			settings
+			transactionSettings
 		);
 		await sendTransactionFromHotWallet(
-			client,
+			userClient,
 			hotWallet,
-			settings
+			transactionSettings
 		);
-		await prepareTrustLine(client, hotWallet, settings);
+		await prepareTrustLine(userClient, hotWallet, transactionSettings);
 
-		const ledgerInfo: any = await client.getLedgerIndex();
-		const preparedSendingSettings: any = await client.autofill(
-			settings.sending
+		const ledgerInfo: any = await userClient.getLedgerIndex();
+		const preparedSendingSettings: any = await userClient.autofill(
+			transactionSettings.sending
 		);
 		preparedSendingSettings.LastLedgerSequence = ledgerInfo + 20;
 
@@ -72,7 +72,7 @@ async function issueCurrency(): Promise<void> {
 		try {
 			handleTransactionResult(
 				await submitTransactionNow(
-					client,
+					userClient,
 					signedSendingSettings.tx_blob
 				)
 			);
@@ -83,7 +83,7 @@ async function issueCurrency(): Promise<void> {
 			throw new Error(error);
 		}
 
-		const hotWalletBalance: any = await client.request({
+		const hotWalletBalance: any = await userClient.request({
 			command: "account_lines",
 			account: hotWallet.address,
 			ledger_index: "validated",
@@ -100,7 +100,7 @@ async function issueCurrency(): Promise<void> {
 			throw new Error(error);
 		}
 
-		const coldWalletBalance: any = await client.request({
+		const coldWalletBalance: any = await userClient.request({
 			command: "gateway_balances",
 			account: coldWallet.address,
 			ledger_index: "validated",
@@ -118,7 +118,7 @@ async function issueCurrency(): Promise<void> {
 			throw new Error(error);
 		}
 		console.info("Disconnecting from testnet...");
-		client.disconnect();
+		userClient.disconnect();
 	} catch (error) {
 		console.error("There was an error processing the payment ❌");
 		throw new Error(error);

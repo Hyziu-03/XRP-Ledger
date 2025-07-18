@@ -9,27 +9,27 @@ if (typeof module !== "undefined") {
 }
 
 export async function setupTransactionWallet(
-	client: any
+	userClient: any
 ): Promise<any> {
 	try {
-		const funding: any = await client.fundWallet();
-		const wallet: any = funding.wallet;
-		const balance: any = funding.balance;
-		const publicKey: string = wallet.publicKey;
-		const classicAddress: string = wallet.classicAddress;
-		const seed: string = wallet.seed;
+		const walletFunding: any = await userClient.fundWallet();
+		const clientWallet: any = walletFunding.wallet;
+		const accountBalance: any = walletFunding.balance;
+		const publicKey: string = clientWallet.publicKey;
+		const classicAddress: string = clientWallet.classicAddress;
+		const walletSeed: string = clientWallet.seed;
 
-		console.info(`Balance: ${balance} XRP`);
+		console.info(`Balance: ${accountBalance} XRP`);
 		console.info("Public Key: ", publicKey);
 		console.info("Address: ", classicAddress);
-		console.info("Seed: ", seed);
+		console.info("Seed: ", walletSeed);
 
 		return {
-			wallet: wallet,
-			balance: balance,
+			wallet: clientWallet,
+			balance: accountBalance,
 			publicKey: publicKey,
 			address: classicAddress,
-			seed: seed,
+			seed: walletSeed,
 		};
 	} catch (error) {
 		console.error("There was an error funding the wallet ❌");
@@ -38,12 +38,12 @@ export async function setupTransactionWallet(
 }
 
 export async function submitTransactionNow(
-	client: any,
+	userClient: any,
 	blob: any
 ): Promise<string> {
 	try {
-		const transaction: any = await client.submitAndWait(blob);
-		return transaction.result.meta.TransactionResult;
+		const transactionBlob: any = await userClient.submitAndWait(blob);
+		return transactionBlob.result.meta.TransactionResult;
 	} catch (error) {
 		console.error(
 			"There was an error submitting the transaction ❌"

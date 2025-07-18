@@ -21,14 +21,14 @@ export function displayWalletKey(
 }
 
 export async function sendTransactionFromColdWalletNow(
-	client: any,
+	userClient: any,
 	coldWallet: any,
-	settings: any
+	transactionSettings: any
 ): Promise<void> {
 	try {
-		const ledgerInfo: any = await client.getLedgerIndex();
-		const preparedColdWalletSettings: any = await client.autofill(
-			settings.coldWallet
+		const ledgerInfo: any = await userClient.getLedgerIndex();
+		const preparedColdWalletSettings: any = await userClient.autofill(
+			transactionSettings.coldWallet
 		);
 		preparedColdWalletSettings.LastLedgerSequence =
 			ledgerInfo + 20;
@@ -39,7 +39,7 @@ export async function sendTransactionFromColdWalletNow(
 		try {
 			handleTransactionResult(
 				await submitTransactionNow(
-					client,
+					userClient,
 					signedColdWalletSettings.tx_blob
 				)
 			);
@@ -58,13 +58,13 @@ export async function sendTransactionFromColdWalletNow(
 }
 
 export async function sendTransactionFromHotWalletNow(
-	client: any,
+	userClient: any,
 	hotWallet: any,
-	settings: any
+	transactionSettings: any
 ): Promise<void> {
-	const ledgerInfo: any = await client.getLedgerIndex();
-	const preparedHotWalletSettings: any = await client.autofill(
-		settings.hotWallet
+	const ledgerInfo: any = await userClient.getLedgerIndex();
+	const preparedHotWalletSettings: any = await userClient.autofill(
+		transactionSettings.hotWallet
 	);
 	preparedHotWalletSettings.LastLedgerSequence = ledgerInfo + 20;
 
@@ -77,7 +77,7 @@ export async function sendTransactionFromHotWalletNow(
 	try {
 		handleTransactionResult(
 			await submitTransactionNow(
-				client,
+				userClient,
 				signedHotWalletSettings.tx_blob
 			)
 		);
@@ -90,13 +90,13 @@ export async function sendTransactionFromHotWalletNow(
 }
 
 export async function prepareTransactionTrustLine(
-	client: any,
+	userClient: any,
 	hotWallet: any,
-	settings: any
+	transactionSettings: any
 ): Promise<void> {
-	const ledgerInfo: any = await client.getLedgerIndex();
-	const preparedTrustLineSettings: any = await client.autofill(
-		settings.trustLine
+	const ledgerInfo: any = await userClient.getLedgerIndex();
+	const preparedTrustLineSettings: any = await userClient.autofill(
+		transactionSettings.trustLine
 	);
 	preparedTrustLineSettings.LastLedgerSequence = ledgerInfo + 20;
 	const signedTrustLineSettings: any = hotWallet.sign(
@@ -106,7 +106,7 @@ export async function prepareTransactionTrustLine(
 	try {
 		handleTransactionResult(
 			await submitTransactionNow(
-				client,
+				userClient,
 				signedTrustLineSettings.tx_blob
 			)
 		);
@@ -117,13 +117,13 @@ export async function prepareTransactionTrustLine(
 		throw new Error(error);
 	}
 
-	const currency: string =
+	const exchangedCurrency: string =
 		preparedTrustLineSettings.LimitAmount.currency;
-	const issuer: string =
+	const currencyIssuer: string =
 		preparedTrustLineSettings.LimitAmount.issuer;
 
-	console.info(`Currency: ${currency}`);
-	console.info(`Issuer: ${issuer}`);
+	console.info(`Currency: ${exchangedCurrency}`);
+	console.info(`Issuer: ${currencyIssuer}`);
 
 	const trustLineTransactionHash: string =
 		signedTrustLineSettings.hash;
