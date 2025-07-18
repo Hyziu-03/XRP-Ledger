@@ -3,16 +3,16 @@
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
 	var {
-		submitTransaction,
-		handleResult,
-	} = require("../../../tools/helpers.js");
+		submitTransactionNow,
+		handleTransactionResult,
+	} = require("../../../tools/helpers.ts");
 } else {
 	console.info(
 		"This script can only be run in Node.js as a module"
 	);
 }
 
-function displayWalletKey(
+export function displayWalletKey(
 	type: string,
 	access: string,
 	address: string
@@ -20,7 +20,7 @@ function displayWalletKey(
 	console.info(`${type} wallet ${access} key: ${address}`);
 }
 
-async function sendTransactionFromColdWalletNow(
+export async function sendTransactionFromColdWalletNow(
 	client: any,
 	coldWallet: any,
 	settings: any
@@ -37,8 +37,8 @@ async function sendTransactionFromColdWalletNow(
 		);
 
 		try {
-			handleResult(
-				await submitTransaction(
+			handleTransactionResult(
+				await submitTransactionNow(
 					client,
 					signedColdWalletSettings.tx_blob
 				)
@@ -57,7 +57,7 @@ async function sendTransactionFromColdWalletNow(
 	}
 }
 
-async function sendTransactionFromHotWalletNow(
+export async function sendTransactionFromHotWalletNow(
 	client: any,
 	hotWallet: any,
 	settings: any
@@ -75,8 +75,8 @@ async function sendTransactionFromHotWalletNow(
 	console.info(`Transaction hash: ${transactionHash}`);
 
 	try {
-		handleResult(
-			await submitTransaction(
+		handleTransactionResult(
+			await submitTransactionNow(
 				client,
 				signedHotWalletSettings.tx_blob
 			)
@@ -89,7 +89,7 @@ async function sendTransactionFromHotWalletNow(
 	}
 }
 
-async function prepareTransactionTrustLine(
+export async function prepareTransactionTrustLine(
 	client: any,
 	hotWallet: any,
 	settings: any
@@ -104,8 +104,8 @@ async function prepareTransactionTrustLine(
 	);
 
 	try {
-		handleResult(
-			await submitTransaction(
+		handleTransactionResult(
+			await submitTransactionNow(
 				client,
 				signedTrustLineSettings.tx_blob
 			)
@@ -130,10 +130,3 @@ async function prepareTransactionTrustLine(
 
 	console.info(`Transaction hash: ${trustLineTransactionHash}`);
 }
-
-module.exports = {
-	displayWalletKey,
-	sendTransactionFromColdWalletNow,
-	sendTransactionFromHotWalletNow,
-	prepareTransactionTrustLine,
-};

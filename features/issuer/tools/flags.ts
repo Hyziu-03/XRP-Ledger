@@ -7,8 +7,7 @@ if (typeof module !== "undefined") {
 		"This script can only be run in Node.js as a module"
 	);
 }
-
-function initTransactionSettings(
+export function initTransactionSettings(
 	coldWallet: any,
 	hotWallet: any
 ): any {
@@ -55,5 +54,3 @@ function initTransactionSettings(
 		},
 	};
 }
-
-module.exports = initTransactionSettings;

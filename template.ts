@@ -2,7 +2,7 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var server = require("./tools/server.js");
+	var { serverURL } = require("./tools/server.ts");
 
 	try {
 		main();
@@ -16,7 +16,7 @@ if (typeof module !== "undefined") {
 	);
 
 async function main() {
-	const client = new xrpl.Client(server);
+	const client = new xrpl.Client(serverURL);
 	console.info("Connecting to testnet...");
 	await client.connect();
 

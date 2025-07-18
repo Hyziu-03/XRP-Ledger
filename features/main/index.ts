@@ -2,12 +2,12 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var server = require("../../tools/server.js");
+	var { serverURL } = require("../../tools/server.ts");
 
 	var {
-		setupWallet,
-		handleResult,
-	} = require("../../tools/helpers.js");
+		setupTransactionWallet,
+		handleTransactionResult,
+	} = require("../../tools/helpers.ts");
 
 	var {
 		getMainLedgerInfo,
@@ -28,11 +28,12 @@ if (typeof module !== "undefined") {
 
 async function getAccountInfo(): Promise<void> {
 	try {
-		const client: any = new xrpl.Client(server);
+		const client: any = new xrpl.Client(serverURL);
 		console.info("Connecting to testnet...");
 		await client.connect();
 
-		const wallet: any = (await setupWallet(client)).wallet;
+		const wallet: any = (await setupTransactionWallet(client))
+			.wallet;
 		const publicKey: string = wallet.publicKey;
 		const classicAddress: string = wallet.classicAddress;
 		const seed: string = wallet.seed;
@@ -55,7 +56,7 @@ async function getAccountInfo(): Promise<void> {
 			result = response.result.validated;
 			console.info(`Validated: ${result}`);
 
-			handleResult(result);
+			handleTransactionResult(result);
 		} catch (error) {
 			console.error(
 				"There was an error handling the transaction result ❌"

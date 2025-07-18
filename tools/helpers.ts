@@ -8,12 +8,16 @@ if (typeof module !== "undefined") {
 	);
 }
 
-async function setupWallet(client) {
+export async function setupTransactionWallet(
+	client: any
+): Promise<any> {
 	try {
-		const funding = await client.fundWallet();
-		const { wallet, balance } = funding;
-		const { publicKey, classicAddress, seed } =
-			wallet;
+		const funding: any = await client.fundWallet();
+		const wallet: any = funding.wallet;
+		const balance: any = funding.balance;
+		const publicKey: string = wallet.publicKey;
+		const classicAddress: string = wallet.classicAddress;
+		const seed: string = wallet.seed;
 
 		console.info(`Balance: ${balance} XRP`);
 		console.info("Public Key: ", publicKey);
@@ -33,9 +37,12 @@ async function setupWallet(client) {
 	}
 }
 
-async function submitTransaction(client, blob) {
+export async function submitTransactionNow(
+	client: any,
+	blob: any
+): Promise<string> {
 	try {
-		const transaction = await client.submitAndWait(blob);
+		const transaction: any = await client.submitAndWait(blob);
 		return transaction.result.meta.TransactionResult;
 	} catch (error) {
 		console.error(
@@ -45,14 +52,10 @@ async function submitTransaction(client, blob) {
 	}
 }
 
-function handleResult(result) {
+export function handleTransactionResult(
+	result: boolean | string
+): void {
 	result === "tesSUCCESS" || result === true
 		? console.info("Transaction successful ✅")
 		: console.error(`Result: ${result} \nTransaction failed ❌`);
 }
-
-module.exports = {
-	setupWallet,
-	submitTransaction,
-	handleResult,
-};

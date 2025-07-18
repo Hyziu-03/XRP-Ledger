@@ -2,12 +2,12 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var server = require("../../tools/server.js");
+	var { serverURL } = require("../../tools/server");
 	var {
-		setupWallet,
-		handleResult,
-		submitTransaction,
-	} = require("../../tools/helpers.js");
+		setupTransactionWallet,
+		handleTransactionResult,
+		submitTransactionNow,
+	} = require("../../tools/helpers");
 	var {
 		displayWalletKey: displayKey,
 		sendTransactionFromColdWalletNow:
@@ -15,7 +15,7 @@ if (typeof module !== "undefined") {
 		sendTransactionFromHotWalletNow: sendTransactionFromHotWallet,
 		prepareTransactionTrustLine: prepareTrustLine,
 	} = require("./tools/index");
-	var initSettings = require("./tools/flags");
+	var { initTransactionSettings } = require("./tools/flags");
 
 	try {
 		issueCurrency();
@@ -31,13 +31,18 @@ if (typeof module !== "undefined") {
 
 async function issueCurrency(): Promise<void> {
 	try {
-		const client: any = new xrpl.Client(server);
+		const client: any = new xrpl.Client(serverURL);
 		console.info("Connecting to testnet...");
 		await client.connect();
 
-		const hotWallet: any = (await setupWallet(client)).wallet;
-		const coldWallet: any = (await setupWallet(client)).wallet;
-		const settings: any = initSettings(coldWallet, hotWallet);
+		const hotWallet: any = (await setupTransactionWallet(client))
+			.wallet;
+		const coldWallet: any = (await setupTransactionWallet(client))
+			.wallet;
+		const settings: any = initTransactionSettings(
+			coldWallet,
+			hotWallet
+		);
 
 		displayKey("Hot", "public", hotWallet.publicKey);
 		displayKey("Cold", "public", coldWallet.publicKey);
@@ -65,8 +70,8 @@ async function issueCurrency(): Promise<void> {
 		);
 
 		try {
-			handleResult(
-				await submitTransaction(
+			handleTransactionResult(
+				await submitTransactionNow(
 					client,
 					signedSendingSettings.tx_blob
 				)
@@ -87,7 +92,7 @@ async function issueCurrency(): Promise<void> {
 			hotWalletBalance.result.validated;
 
 		try {
-			handleResult(hotWalletValidation);
+			handleTransactionResult(hotWalletValidation);
 		} catch (error) {
 			console.error(
 				"There was an error handling the transaction result ❌"
@@ -105,7 +110,7 @@ async function issueCurrency(): Promise<void> {
 			coldWalletBalance.result.validated;
 
 		try {
-			handleResult(coldtWalletValidation);
+			handleTransactionResult(coldtWalletValidation);
 		} catch (error) {
 			console.error(
 				"There was an error handling the transaction result ❌"

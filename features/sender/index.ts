@@ -2,15 +2,15 @@
 
 if (typeof module !== "undefined") {
 	var xrpl = require("xrpl");
-	var server = require("../../tools/server.js");
+	var { serverURL } = require("../../tools/server");
 	var {
-		submitTransaction,
-		handleResult,
-	} = require("../../tools/helpers.js");
+		submitTransactionNow,
+		handleTransactionResult,
+	} = require("../../tools/helpers");
 	var {
 		WALLET_SEED: SEED,
 		WALLET_DESTINATION_ADDRESS: DESTINATION_ADDRESS,
-	} = require("./tools/index.ts");
+	} = require("./tools/index");
 
 	try {
 		sendToken();
@@ -26,7 +26,7 @@ if (typeof module !== "undefined") {
 
 async function sendToken(): Promise<void> {
 	try {
-		const client: any = new xrpl.Client(server);
+		const client: any = new xrpl.Client(serverURL);
 		console.info("Connecting to testnet...");
 		await client.connect();
 
@@ -62,8 +62,11 @@ async function sendToken(): Promise<void> {
 
 		let result: any;
 		try {
-			result = await submitTransaction(client, signed.tx_blob);
-			handleResult(result);
+			result = await submitTransactionNow(
+				client,
+				signed.tx_blob
+			);
+			handleTransactionResult(result);
 		} catch (error) {
 			console.error(
 				"There was an error handling the transaction result ❌"
